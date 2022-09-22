@@ -15,6 +15,7 @@ enum FilterOptions {
 
 class ProductOverviewScreen extends StatefulWidget {
   const ProductOverviewScreen({Key? key}) : super(key: key);
+  static const routeName = '/product-overview';
 
   @override
   State<ProductOverviewScreen> createState() => _ProductOverviewScreenState();
@@ -45,8 +46,8 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
             .then((_) => _isLoading = false);
       }
     });
-      _isInit = false;
-      super.didChangeDependencies();
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -102,7 +103,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ProductGrid(showOnlyFav:_showOnlyFav),
+          : ProductGrid(showOnlyFav: _showOnlyFav),
     );
   }
 }

@@ -17,7 +17,7 @@ class OrderItem {
 }
 
 class Orders extends ChangeNotifier {
-   List<OrderItem> _orderItems = [];
+  List<OrderItem> _orderItems = [];
 
   List<OrderItem> get orders {
     return [..._orderItems];
@@ -25,20 +25,27 @@ class Orders extends ChangeNotifier {
 
   Future<void> fetchAndsetOrders() async {
     final url = Uri.parse(
-        'https://flutter-shop-app-48226-default-rtdb.firebaseio.com/orders.json');
+        'https://flutter-shopapp-9fbb4-default-rtdb.firebaseio.com/orders.json');
     final response = await http.get(url);
     List<OrderItem> loadedOrders = [];
-    final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
+    final extractedData = jsonDecode(response.body) as Map<String, dynamic>?;
+    if (extractedData == null) {
+      return;
+    }
     extractedData.forEach((key, value) {
-      loadedOrders.add(OrderItem(
-        id: key,
-        amount: value['amount'],
-        dateTime: DateTime.parse(value['dateTime']),
-        products: (value['products'] as List<dynamic>)
-            .map((e) => CartItem(
-                id: e['id'], title: e['title'], quantity: e['quantity'], price: e['price']))
-            .toList(),
-      ),
+      loadedOrders.add(
+        OrderItem(
+          id: key,
+          amount: value['amount'],
+          dateTime: DateTime.parse(value['dateTime']),
+          products: (value['products'] as List<dynamic>)
+              .map((e) => CartItem(
+                  id: e['id'],
+                  title: e['title'],
+                  quantity: e['quantity'],
+                  price: e['price']))
+              .toList(),
+        ),
       );
     });
     _orderItems = loadedOrders;
@@ -48,7 +55,7 @@ class Orders extends ChangeNotifier {
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url = Uri.parse(
-        'https://flutter-shop-app-48226-default-rtdb.firebaseio.com/orders.json');
+        'https://flutter-shopapp-9fbb4-default-rtdb.firebaseio.com/orders.json');
     final timeStamp = DateTime.now();
     try {
       final response = await http.post(url,

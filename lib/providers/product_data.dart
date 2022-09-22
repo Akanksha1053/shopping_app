@@ -22,12 +22,15 @@ class ProductData extends ChangeNotifier {
 //Fetching products using http GET request
   Future<void> fetchProducts() async {
     final url = Uri.parse(
-        'https://flutter-shop-app-48226-default-rtdb.firebaseio.com/products.json');
+        'https://flutter-shopapp-9fbb4-default-rtdb.firebaseio.com/.json');
     try {
       final response = await http.get(url);
       final List<Product> loadedProducts = [];
       // print(json.decode(response.body));
-      final data = json.decode(response.body) as Map<String, dynamic>;
+      final data = json.decode(response.body) as Map<String, dynamic>?;
+      if (data == null) {
+        return;
+      }
       data.forEach((key, value) {
         loadedProducts.add(Product(
             id: key,
@@ -40,14 +43,14 @@ class ProductData extends ChangeNotifier {
       _products = loadedProducts;
       notifyListeners();
     } catch (error) {
-      rethrow;
+      print(error);
     }
   }
 
 //Adding Products using http POST
   Future<void> addProducts(Product p) async {
     final url = Uri.parse(
-        'https://flutter-shop-app-48226-default-rtdb.firebaseio.com/products.json');
+        'https://flutter-shopapp-9fbb4-default-rtdb.firebaseio.com/.json');
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -75,7 +78,7 @@ class ProductData extends ChangeNotifier {
 //Updating products using http PATCH
   Future<void> updateProduct(String? id, Product p) async {
     final url = Uri.parse(
-        'https://flutter-shop-app-48226-default-rtdb.firebaseio.com/products/$id.json');
+        'https://flutter-shopapp-9fbb4-default-rtdb.firebaseio.com/$id.json');
     await http.patch(url,
         body: json.encode({
           'title': p.title,
@@ -92,7 +95,7 @@ class ProductData extends ChangeNotifier {
 //Deleting products using http
   Future<void> deleteProducts(String id) async {
     final url = Uri.parse(
-        'https://flutter-shop-app-48226-default-rtdb.firebaseio.com/products/$id.json');
+        'https://flutter-shopapp-9fbb4-default-rtdb.firebaseio.com/$id.json');
     final existingProdIndex =
         _products.indexWhere((element) => element.id == id);
     Product? existingProduct = _products[existingProdIndex];
